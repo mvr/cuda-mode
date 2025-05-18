@@ -39,17 +39,9 @@
 ;; necessary to get them compiled.)
 (eval-when-compile
   (require 'cc-langs)
-  (require 'cc-fonts))
-
-
-(eval-and-compile
-  ;; Make our mode known to the language constant system.  Use C
-  ;; mode as the fallback for the constants we don't change here.
-  ;; This needs to be done also at compile time since the language
-  ;; constants are evaluated then.
+  (require 'cc-fonts)
   (c-add-language 'cuda-mode 'c++-mode))
 
-;; cuda has no boolean but a string and a vector type.
 (c-lang-defconst c-primitive-type-kwds
   "Primitive type keywords.  As opposed to the other keyword lists, the
 keywords listed here are fontified with the type face instead of the
