@@ -242,50 +242,27 @@ operators."
     (setq cuda-mode-syntax-table
 	  (funcall (c-lang-const c-make-mode-syntax-table cuda))))
 
-(defvar cuda-mode-abbrev-table nil
-  "Abbreviation table used in cuda-mode buffers.")
-
-(c-define-abbrev-table 'cuda-mode-abbrev-table
-  ;; Keywords that if they occur first on a line might alter the
-  ;; syntactic context, and which therefore should trig reindentation
-  ;; when they are completed.
-  '(("else" "else" c-electric-continued-statement 0)
-    ("while" "while" c-electric-continued-statement 0)))
-
 (defvar-keymap cuda-mode-map
   :parent c++-mode-map
-  :doc "Cuda keymap inherited from C++")
+  :doc "CUDA keymap inherited from C++")
 
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.cu[h]?\\'" . cuda-mode))
-
-(defun cuda-completion-function ()
-  "Generate completion list for primitive capf support."
-  (when-let ((is-cuda (eq major-mode 'cuda-mode)) ;; only work in cuda-mode
-	     (bounds (bounds-of-thing-at-point 'symbol)))
-    (list (car bounds)
-          (cdr bounds)
-          cuda-builtins
-          :exclusive 'no)))
 
 ;;;###autoload
 (define-derived-mode cuda-mode c++-mode "Cuda"
   "Major mode for editing Cuda code.
 This mode derives from C++ mode.
 Key bindings:
-\\{ccuda-mode-map}"
-  :after-hook (progn (c-make-noise-macro-regexps)
-		     (c-make-macro-with-semi-re)
-		     (c-update-modeline))
+\\{cuda-mode-map}"
   (c-initialize-cc-mode t)
-  (setq abbrev-mode t)
   (c-init-language-vars cuda-mode)
   (c-common-init 'cuda-mode)
-  (cc-imenu-init cc-imenu-c++-generic-expression)
-  (add-hook 'flymake-diagnostic-functions 'flymake-cc nil t)
-  (add-hook 'completion-at-point-functions #'cuda-completion-function)
+  (setq c-buffer-is-cc-mode 'c++-mode)
+  (when (boundp 'cc-imenu-c++-generic-expression)
+    (c-make-init-lang-vars-fun 'cuda)
+    (cc-imenu-init cc-imenu-c++-generic-expression))
   (c-run-mode-hooks 'c-mode-common-hook))
-
 
 (provide 'cuda-mode)
 ;;; cuda-mode.el ends here
