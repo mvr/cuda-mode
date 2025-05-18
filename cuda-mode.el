@@ -42,6 +42,9 @@
   (require 'cc-fonts)
   (c-add-language 'cuda-mode 'c++-mode))
 
+;; The `cc-langs.el` file is a good reference for how these constants
+;; should be used.
+
 (c-lang-defconst c-primitive-type-kwds
   "Primitive type keywords.  As opposed to the other keyword lists, the
 keywords listed here are fontified with the type face instead of the
@@ -62,19 +65,37 @@ the appropriate place for that."
      "short1" "ushort1" "short2" "ushort2" "short3" "ushort3" "short4" "ushort4"
      "int1" "uint1" "int2" "uint2" "int3" "uint3" "int4" "uint4"
      "long1" "ulong1" "long2" "ulong2" "long3" "ulong3" "long4" "ulong4"
+     "longlong1" "ulonglong1" "longlong2" "ulonglong2" "longlong3" "ulonglong3" "longlong4" "ulonglong4"
      "float1" "float2"  "float3" "float4"
-     "double1" "double2" )
+     "double1" "double2" "double3" "double4" )
    (c-lang-const c-primitive-type-kwds c++)))
+
+;; These don't get highlighted, why?
+(c-lang-defconst c-type-modifier-with-parens-kwds
+  cuda (append
+	'("__launch_bounds__" "__cluster_dims__" "__maxnreg__")
+	(c-lang-const c-type-modifier-with-parens-kwds c++)))
+
+(c-lang-defconst c-paren-nontype-kwds
+  cuda (append
+	'("__align__")
+	(c-lang-const c-paren-nontype-kwds c++)))
 
 (c-lang-defconst c-modifier-kwds
   cuda (append
-	'("__host__" "__device__" "__global__")
+	'("__host__"
+          "__device__"
+          "__global__"
+          "__constant__"
+          "__shared__"
+          "__grid_constant__"
+          "__managed__"
+          "__restrict__"
+          "__noinline__"
+          "__forceinline__"
+          "__inline_hint__"
+          )
 	(c-lang-const c-modifier-kwds c++)))
-
-(c-lang-defconst c-type-modifier-prefix-kwds
-  cuda (append
-	'("__device__" "__constant__" "__shared__" "__grid_constant__" "__managed__" "__restrict__")
-	(c-lang-const c-type-modifier-prefix-kwds c++)))
 
 (c-lang-defconst c-other-op-syntax-tokens
   "List of the tokens made up of characters in the punctuation or
